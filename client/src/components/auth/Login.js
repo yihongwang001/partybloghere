@@ -11,6 +11,29 @@ const Login = (props) => {
     password: "",
   });
 
+  const [loginStatus, setLoginStutus] = useState({
+    inStatus: false,
+    newUser: false,
+    loginFail: false,
+    message: "",
+  });
+
+  async function getInfo(userQuery) {
+    console.log("get info");
+    const res = await fetch("/getUser", {
+      method: "post",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(userQuery),
+    });
+
+    const user = await res.json();
+    console.log("user get info", user);
+
+    return user;
+  }
+
   async function createUser(data) {
     // Default options are marked with *
     await fetch("/register", {
@@ -23,17 +46,63 @@ const Login = (props) => {
 
       body: JSON.stringify(data), // body data type must match "Content-Type" header
     });
+    console.log("createUser");
   }
+
+  const checkUserExistDB = async (data) => {
+    const dbuser = await getInfo(data);
+
+    /*if new user*/
+
+    if (dbuser.length === 0) {
+      createUser(data);
+      console.log("user created");
+      setLoginStutus({
+        ...loginStatus,
+        inStatus: true,
+        newUser: true,
+      });
+      console.log("first");
+      props.history.push({
+        pathname: "/Register",
+      });
+      localStorage.setItem("current-user", JSON.stringify(state));
+    } else if (
+      /*user found in db and match password and email*/
+      dbuser[0].first === state.firstName &&
+      dbuser[0].password === state.password
+    ) {
+      setLoginStutus({
+        ...loginStatus,
+        inStatus: true,
+      });
+      props.history.push({
+        pathname: "/partyPage",
+        state,
+      });
+      console.log("nextPage");
+
+      localStorage.setItem("current-user", JSON.stringify(state));
+    } else {
+      setLoginStutus({
+        ...loginStatus,
+        loginFail: true,
+      });
+      console.log("last");
+    }
+
+    console.log("login Status", loginStatus);
+  };
 
   const handleOnSubmit = (event) => {
     event.preventDefault();
 
-    props.history.push({
-      pathname: "/partyPage",
-      state,
-    });
-    createUser(state);
-    console.log(state);
+    // props.history.push({
+    //   pathname: "/partyPage",
+    //   state,
+    // });
+    checkUserExistDB(state);
+    // createUser(state);
   };
 
   const handleInputChange = (event) => {
@@ -44,6 +113,7 @@ const Login = (props) => {
       [name]: value,
     }));
   };
+
   //put functions up here. Like consts that put it in return
   return (
     <main>
@@ -69,7 +139,7 @@ const Login = (props) => {
               }}
             >
               <br />
-              Regisration <br />
+              Login <br />
               <br />
             </h1>
             <Form className="register-form" onSubmit={handleOnSubmit}>
@@ -102,7 +172,7 @@ const Login = (props) => {
               </Form.Group>
 
               <Button variant="dark" type="submit">
-                Register & Log in
+                Log in
               </Button>
             </Form>
           </div>
