@@ -40,15 +40,15 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/lpanavas/youtubeTutorial.git"
+    "url": "git+https://github.com/yihongwang001/partybloghere.git"
   },
   "keywords": [],
   "author": "Liudas&Yihong",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/lpanavas/youtubeTutorial/issues"
+    "url": "https://github.com/yihongwang001/partybloghere/issues"
   },
-  "homepage": "https://github.com/lpanavas/youtubeTutorial#readme",
+  "homepage": "https://github.com/yihongwang001/partybloghere#readme",
   "description": "This website was create by Liudas Panavas and Yihong Wang for CS5610 Web Development at Northeastern (https://johnguerra.co/classes/webDevelopment_fall_2020/)",
   "engines": {
     "node": "v12.18.x"
